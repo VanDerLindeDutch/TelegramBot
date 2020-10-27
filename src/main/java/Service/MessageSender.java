@@ -10,7 +10,7 @@ import Bot.*;
 public class MessageSender implements Runnable {
     private static final Logger log = Logger.getLogger(MessageSender.class.getName());
     private final int SENDER_SLEEP_TIME = 1000;
-    private Bot bot;
+    private final Bot bot;
 
     public MessageSender(Bot bot) {
         this.bot = bot;

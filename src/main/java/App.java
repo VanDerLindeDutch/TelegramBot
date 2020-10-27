@@ -3,6 +3,7 @@ import Service.MessageReciever;
 import Service.MessageSender;
 import org.telegram.telegrambots.ApiContextInitializer;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 public class App {
@@ -10,7 +11,7 @@ public class App {
     private static final int PRIORITY_FOR_RECEIVER = 1;
     private static final int PRIORITY_FOR_SENDER = 3;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ApiContextInitializer.init();
         Bot weather_bot = new Bot("bitummitum_bot", "1172924268:AAEZGTU69qi09otwTcp3YIFwa8bK7pnoX7o");
         weather_bot.botConnect();
@@ -28,7 +29,5 @@ public class App {
         sender.setName("MsgSender");
         sender.setPriority(PRIORITY_FOR_SENDER);
         sender.start();
-
-
     }
 }

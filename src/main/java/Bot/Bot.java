@@ -1,8 +1,5 @@
 package Bot;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import net.aksingh.owmjapis.model.param.Weather;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -13,12 +10,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
 
-@NoArgsConstructor
 public class Bot extends TelegramLongPollingBot {
     private static final Logger log = Logger.getLogger(Bot.class.getName());
     private static final long RECONNECT_PAUSE = 100000;
-    private String userName;
-    private String token;
+    private final String userName;
+    private final String token;
     public final Queue<Object> sendQueue = new ConcurrentLinkedQueue<>();
     public final Queue<Object> receiveQueue = new ConcurrentLinkedQueue<>();
 

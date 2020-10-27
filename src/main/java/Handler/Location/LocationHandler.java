@@ -2,10 +2,7 @@ package Handler.Location;
 
 import Bot.Bot;
 import Command.ParsedCommand;
-
-
 import Handler.AbstractHandler;
-import net.aksingh.owmjapis.model.CurrentWeather;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -34,7 +31,7 @@ public class LocationHandler extends AbstractHandler {
         sendMessage.setChatId(chatID);
         sendMessage.enableMarkdown(true);
         StringBuilder text = new StringBuilder();
-        text.append("Weather : ");
+        text.append("Weather dorecast for 1 day: \n");
         ExecutorService executor = Executors.newFixedThreadPool(1);
         Callable<String> callable = new ParseThread(update.getMessage().getLocation().getLongitude(), update.getMessage().getLocation().getLatitude());
         Future<String> future = executor.submit(callable);
