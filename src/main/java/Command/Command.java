@@ -4,5 +4,7 @@ public enum Command {
     START,
     SENDLOCATION,
     NONE,
-    NOTFORME
+    NOTFORME,
+    SUBSCRIBE,
+    UNSUBSCRIBE
 }

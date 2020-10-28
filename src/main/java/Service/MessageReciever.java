@@ -4,9 +4,13 @@ import Bot.Bot;
 import Command.*;
 import Handler.*;
 import Handler.Location.LocationHandler;
+import Handler.SubscribePack.SubThread;
+import Handler.SubscribePack.SubscribeHandler;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,6 +19,7 @@ public class MessageReciever implements Runnable {
     private final int WAIT_FOR_NEW_MESSAGE_DELAY = 1000;
     private final Bot bot;
     private final Parser parser;
+    private final List<Thread> list = new ArrayList<>();
 
     public MessageReciever(Bot bot) {
         this.bot = bot;
@@ -47,7 +52,6 @@ public class MessageReciever implements Runnable {
     }
 
     private void analyzeForUpdateType(Update update) {
-
         Long chatId = update.getMessage().getChatId();
         String inputText = update.getMessage().getText();
 
@@ -82,6 +86,10 @@ public class MessageReciever implements Runnable {
                 return new LocationHandler(bot);
             case NOTFORME:
                 return new DefaultTextHandler(bot);
+            case SUBSCRIBE:
+                return new SubscribeHandler(bot, list);
+            case UNSUBSCRIBE:
+                return new UnsubscribeHandler(bot, list);
             default:
                 log.info("Handler for command[" + command.toString() + "] not Set. Return DefaultHandler");
                 return new DefaultCommandHandler(bot);

@@ -40,6 +40,16 @@ public class Bot extends TelegramLongPollingBot {
         return token;
     }
 
+    @Override
+    public String toString() {
+        return "Bot{" +
+                "userName='" + userName + '\'' +
+                ", token='" + token + '\'' +
+                ", sendQueue=" + sendQueue +
+                ", receiveQueue=" + receiveQueue +
+                '}';
+    }
+
     public void botConnect() {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
@@ -55,5 +65,7 @@ public class Bot extends TelegramLongPollingBot {
             }
             botConnect();
         }
+
     }
 }
+
