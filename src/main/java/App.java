@@ -10,8 +10,7 @@ public class App {
     private static final Logger log = Logger.getLogger(App.class.getName());
     private static final int PRIORITY_FOR_RECEIVER = 1;
     private static final int PRIORITY_FOR_SENDER = 3;
-
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         ApiContextInitializer.init();
         Bot weather_bot = new Bot("bitummitum_bot", "1172924268:AAEZGTU69qi09otwTcp3YIFwa8bK7pnoX7o");
         weather_bot.botConnect();

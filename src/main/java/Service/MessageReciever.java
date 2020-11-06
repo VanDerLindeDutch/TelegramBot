@@ -2,10 +2,19 @@ package Service;
 
 import Bot.Bot;
 import Command.*;
+import DB.LocationEntity;
+import DB.SubscribeEntity;
+import DB.UserEntity;
+import DB.WeatherForecastEntity;
 import Handler.*;
 import Handler.Location.LocationHandler;
-import Handler.SubscribePack.SubThread;
 import Handler.SubscribePack.SubscribeHandler;
+import Handler.Unsubscribe.UnsubscribeHandler;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -16,21 +25,35 @@ import java.util.logging.Logger;
 
 public class MessageReciever implements Runnable {
     private static final Logger log = Logger.getLogger(MessageReciever.class.getName());
-    private final int WAIT_FOR_NEW_MESSAGE_DELAY = 1000;
+    private static final int WAIT_FOR_NEW_MESSAGE_DELAY = 1000;
     private final Bot bot;
     private final Parser parser;
-    private final List<Thread> list = new ArrayList<>();
+    private final List<Thread> listSubscribeThreads = new ArrayList<>();
+    public static final SessionFactory SESSION_FACTORY;
 
     public MessageReciever(Bot bot) {
         this.bot = bot;
         parser = new Parser(bot.getBotUsername());
     }
 
+    static {
+        Configuration configuration = new Configuration().configure();
+        configuration.addAnnotatedClass(UserEntity.class);
+        configuration.addAnnotatedClass(LocationEntity.class);
+        configuration.addAnnotatedClass(SubscribeEntity.class);
+        configuration.addAnnotatedClass(WeatherForecastEntity.class);
+        StandardServiceRegistryBuilder serviceBuilder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
+        SESSION_FACTORY = configuration.buildSessionFactory(serviceBuilder.build());
+    }
+
+
+
     @Override
     public void run() {
         log.info("[STARTED] MsgReciever.  Bot class: " + bot);
         while (true) {
-            for (Object object = bot.receiveQueue.poll(); object != null; object = bot.receiveQueue.poll()) {
+            if(!bot.receiveQueue.isEmpty()){
+                Object object = bot.receiveQueue.poll();
                 log.info("New object for analyze in queue " + object.toString());
                 analyze(object);
             }
@@ -41,6 +64,11 @@ public class MessageReciever implements Runnable {
                 return;
             }
         }
+    }
+
+
+    public static Session GetSession() throws HibernateException {
+        return SESSION_FACTORY.openSession();
     }
 
     private void analyze(Object object) {
@@ -87,9 +115,9 @@ public class MessageReciever implements Runnable {
             case NOTFORME:
                 return new DefaultTextHandler(bot);
             case SUBSCRIBE:
-                return new SubscribeHandler(bot, list);
+                return new SubscribeHandler(bot, listSubscribeThreads);
             case UNSUBSCRIBE:
-                return new UnsubscribeHandler(bot, list);
+                return new UnsubscribeHandler(bot, listSubscribeThreads);
             default:
                 log.info("Handler for command[" + command.toString() + "] not Set. Return DefaultHandler");
                 return new DefaultCommandHandler(bot);

@@ -23,6 +23,7 @@ public class Bot extends TelegramLongPollingBot {
         this.token = token;
     }
 
+    @Override
     public void onUpdateReceived(Update update) {
 
         log.info("Update recieved. Update ID:" + update);

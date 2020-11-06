@@ -21,7 +21,8 @@ public class MessageSender implements Runnable {
         log.info("[STARTED] MsgSender.  App.Bot class: " + bot);
         try {
             while (true) {
-                for (Object object = bot.sendQueue.poll(); object != null; object = bot.sendQueue.poll()) {
+                if(!bot.sendQueue.isEmpty()){
+                    Object object = bot.sendQueue.poll();
                     log.info("Get new msg to send " + object);
                     send(object);
                 }
@@ -40,13 +41,12 @@ public class MessageSender implements Runnable {
         try {
             MessageType messageType = messageType(object);
             switch (messageType) {
-                case EXECUTE:
+                case EXECUTE -> {
                     BotApiMethod<Message> message = (BotApiMethod<Message>) object;
                     log.info("Use Execute for " + object);
                     bot.execute(message);
-                    break;
-                default:
-                    log.info("Cant detect type of object. " + object);
+                }
+                default -> log.info("Cant detect type of object. " + object);
             }
         } catch (Exception e) {
             log.log(Level.INFO, e.getMessage(), e);

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Formatter;
 import java.util.concurrent.Callable;
 
@@ -21,6 +22,7 @@ public class ParseThread implements Callable<String> {
 
     @Override
     public String call() {
+
         StringBuilder stringBuilder = new StringBuilder();
         Formatter f = new Formatter();
         f.format("https://api.openweathermap.org/data/2.5/onecall?lat=%f&lon=%f&exclude=minutely,hourly,alerts&appid=%s&units=metric", latitude, lontitude, APIkey);
